@@ -350,6 +350,7 @@ char *sqliteDB_opt_select_allolduser(){
   		char *age=( char *)sqlite3_column_text(stmt,2);
 		char *address=( char *)sqlite3_column_text(stmt,3);
 		char *state=( char *)sqlite3_column_text(stmt,4);
+		char *spl="#";
 		printf("\t%s\t\t%s\t\t%d\t\t%s\t\t%s\n",name,sex,age,address,state);//测试
   		/*char name[50]="sqlite3_column_text(stmt,0)";
 		char sex[50]="sqlite3_column_text(stmt,1)";
@@ -358,13 +359,19 @@ char *sqliteDB_opt_select_allolduser(){
 		char state[200]="sqlite3_column_text(stmt,4)";*/
 
 		strcat(dest,name);
+		strcat(dest,spl);
 		strcat(dest,sex);
+		strcat(dest,spl);
 		strcat(dest,age);
+		strcat(dest,spl);
 		strcat(dest,address);
+		strcat(dest,spl);
 		strcat(dest,state);
+		strcat(dest,spl);
  	}
 
  	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
  	return dest;//返回结果
 }
 char *sqliteDB_opt_select_alluser(){
@@ -378,6 +385,8 @@ char *sqliteDB_opt_select_alluser(){
  	
 	if(nret!=SQLITE_OK)
   		return s;
+ 	printf("\n\tname\t\tsex\t\tage\t\tphone\t\taddress\t\trelation\n");//测试
+ 	printf("\t------------------------------------------------------------\n");
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -388,23 +397,31 @@ char *sqliteDB_opt_select_alluser(){
 		char *phone=( char *)sqlite3_column_text(stmt,3);
 		char *address=( char *)sqlite3_column_text(stmt,4);
 		char *relation=( char *)sqlite3_column_text(stmt,5);
+		char *spl="#";
   		/*char name[50]="sqlite3_column_text(stmt,0)";
 		char sex[50]="sqlite3_column_text(stmt,1)";
   		char age[50]="sqlite3_column_text(stmt,2)";
 		char phone[50]="sqlite3_column_text(stmt,3)";
 		char address[200]="sqlite3_column_text(stmt,4)";
 		char relation[50]="sqlite3_column_text(stmt,5)";*/
-
+		printf("\t%s\t\t%s\t\t%d\t\t%s\t\t%s\t\t%s\n",name,sex,age,phone,address,relation);//测试
 
 		strcat(dest,name);
+		strcat(dest,spl);
 		strcat(dest,sex);
+		strcat(dest,spl);
 		strcat(dest,age);
+		strcat(dest,spl);
 		strcat(dest,phone);
+		strcat(dest,spl);
 		strcat(dest,address);
+		strcat(dest,spl);
 		strcat(dest,relation);
+		strcat(dest,spl);
   }
 
  	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
  	return dest;
 }
 char *sqliteDB_opt_select_allpath(){
@@ -429,6 +446,7 @@ char *sqliteDB_opt_select_allpath(){
 		char *high=( char *)sqlite3_column_text(stmt,3);
 		char *speed=( char *)sqlite3_column_text(stmt,4);
 		char *timer=( char *)sqlite3_column_text(stmt,5);
+		char *spl="#";
   		/*char name[50]="sqlite3_column_text(stmt,0)";
 		char jidu[50]="sqlite3_column_text(stmt,1)";
 		char weidu[50]="sqlite3_column_text(stmt,2)";
@@ -438,11 +456,17 @@ char *sqliteDB_opt_select_allpath(){
 
 
 		strcat(dest,name);
+		strcat(dest,spl);
 		strcat(dest,jidu);
+		strcat(dest,spl);
 		strcat(dest,weidu);
+		strcat(dest,spl);
 		strcat(dest,high);
+		strcat(dest,spl);
 		strcat(dest,speed);
+		strcat(dest,spl);
 		strcat(dest,timer);
+		strcat(dest,spl);
  	}
 
  	sqlite3_finalize(stmt);
@@ -481,6 +505,7 @@ char *sqliteDB_opt_selectolduser(char *name){
   		char *_age=( char *)sqlite3_column_text(stmt,2);
 		char *_address=( char *)sqlite3_column_text(stmt,3);
 		char *_state=( char *)sqlite3_column_text(stmt,4);
+		char *spl="#";
   		/*char _name[50]="sqlite3_column_text(stmt,0)";
 		char _sex[50]="sqlite3_column_text(stmt,1)";
   		char _age[50]="sqlite3_column_text(stmt,2)";
@@ -489,10 +514,15 @@ char *sqliteDB_opt_selectolduser(char *name){
 
 
 		strcat(dest,_name);
+		strcat(dest,spl);
 		strcat(dest,_sex);
+		strcat(dest,spl);
 		strcat(dest,_age);
+		strcat(dest,spl);
 		strcat(dest,_address);
+		strcat(dest,spl);
 		strcat(dest,_state);
+		strcat(dest,spl);
  	}
 	
 	sqlite3_finalize(stmt);
@@ -530,6 +560,7 @@ char *sqliteDB_opt_selectuser(char *name){
 		char *_phone=( char *)sqlite3_column_text(stmt,3);
 		char *_address=( char *)sqlite3_column_text(stmt,4);
 		char *_relation=( char *)sqlite3_column_text(stmt,5);
+		char *spl="#";
 		/*char _name[50]="sqlite3_column_text(stmt,0)";
 		char _sex[50]="sqlite3_column_text(stmt,1)";
   		char _age[50]="sqlite3_column_text(stmt,2)";
@@ -538,11 +569,17 @@ char *sqliteDB_opt_selectuser(char *name){
 		char _relation[50]="sqlite3_column_text(stmt,5)";*/
 
 		strcat(dest,_name);
+		strcat(dest,spl);
 		strcat(dest,_sex);
+		strcat(dest,spl);
 		strcat(dest,_age);
+		strcat(dest,spl);
 		strcat(dest,_phone);
+		strcat(dest,spl);
 		strcat(dest,_address);
-		strcat(dest,_relation);
+		strcat(dest,spl);
+		strcat(dest,_relation);
+		strcat(dest,spl);
  	}
 	
 	sqlite3_finalize(stmt);
@@ -580,6 +617,7 @@ char *sqliteDB_opt_selectpath(char *name){
 		 char *_high=( char *)sqlite3_column_text(stmt,3);
 		 char *_speed=( char *)sqlite3_column_text(stmt,4);
 		 char *_timer=( char *)sqlite3_column_text(stmt,5);
+		 char *spl="#";
 		/*char _name[50]="sqlite3_column_text(stmt,0)";
 		char _jidu[50]="sqlite3_column_text(stmt,1)";
 		char _weidu[50]="sqlite3_column_text(stmt,2)";
@@ -588,11 +626,17 @@ char *sqliteDB_opt_selectpath(char *name){
 		char _timer[50]="sqlite3_column_text(stmt,5)";*/
 
 		strcat(dest,_name);
+		strcat(dest,spl);
 		strcat(dest,_jidu);
+		strcat(dest,spl);
 		strcat(dest,_weidu);
+		strcat(dest,spl);
 		strcat(dest,_high);
+		strcat(dest,spl);
 		strcat(dest,_speed);
+		strcat(dest,spl);
 		strcat(dest,_timer);
+		strcat(dest,spl);
   		
  	}
 	
