@@ -747,6 +747,19 @@ int sqliteDB_existpath(char *name){
 	sqlite3_finalize(stmt);
 	return 0;//成功
 }
+
+double StringtoDouble(char *str){//将char*转换为double类型
+	double f;
+	f=atof(str);
+	return f;
+}
+
+char *DoubletoString(double f){//将double转换为char*类型
+	char str[50];
+	sprintf(str,"%f",f);
+	return str;//返回数组首地址
+}
+
 #endif
 
 
