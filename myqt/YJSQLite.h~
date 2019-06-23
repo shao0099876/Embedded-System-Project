@@ -425,7 +425,7 @@ char *sqliteDB_opt_select_alluser(){
 	//int a;
 	//printf("ssssssss");
 	//a=strlen(dest);
-	printf("%d\n",dest);//测试
+	printf("%d\n",a);//测试
  	return dest;
 }
 char *sqliteDB_opt_select_allpath(){

@@ -5,8 +5,8 @@
 int main(int argc, char **argv)
 {
 	//创建线程调用gps获取地点信息
-	//pthread_t th_gps;	
-	//pthread_create(&th_gps, NULL, 调用函数, 0);
+	pthread_t th_gps;	
+	pthread_create(&th_gps, NULL, 调用函数, 0);
 
 	QApplication app(argc,argv);
 	MyDlg *mydlg = new MyDlg;	

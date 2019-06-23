@@ -1,13 +1,12 @@
-
-<ui version="4.0">
+<ui version="4.0" >
  <class>Form</class>
  <widget class="QWidget" name="Form" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>663</width>
+    <height>475</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,31 +15,54 @@
   <widget class="QPushButton" name="pushButton" >
    <property name="geometry" >
     <rect>
-     <x>270</x>
-     <y>130</y>
-     <width>80</width>
-     <height>27</height>
+     <x>490</x>
+     <y>320</y>
+     <width>131</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text" >
-    <string>select</string>
+    <string>selectuser</string>
    </property>
   </widget>
   <widget class="QTextEdit" name="textEdit" >
    <property name="geometry" >
     <rect>
-     <x>50</x>
-     <y>100</y>
-     <width>171</width>
-     <height>75</height>
+     <x>0</x>
+     <y>300</y>
+     <width>411</width>
+     <height>171</height>
     </rect>
    </property>
    <property name="html" >
     <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 &lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Bitstream Charter'; font-size:9pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">监护人信息&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'文鼎PL细上海宋Uni'; font-size:18pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Bitstream Charter'; font-size:9pt;">监护人信息&lt;/p>&lt;/body>&lt;/html></string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2" >
+   <property name="geometry" >
+    <rect>
+     <x>490</x>
+     <y>410</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>selectold</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit_2" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>260</y>
+     <width>471</width>
+     <height>41</height>
+    </rect>
    </property>
   </widget>
  </widget>
