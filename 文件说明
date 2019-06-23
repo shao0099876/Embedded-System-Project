@@ -1,6 +1,6 @@
 main.cpp  主函数
 myqtc1.h 槽头文件 
-myqtseclect.cpp 查询子程序
+myqtseclect.cpp 查询子程序  18-20行调用数据库查询user  26-28查询老人
 untitle。ui  界面
 YJDB。DB 数据库
 YJsqllitte。h  数据库头文件  。cpp操作函数

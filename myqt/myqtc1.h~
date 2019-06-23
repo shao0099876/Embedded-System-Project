@@ -9,7 +9,6 @@ class MyDlg : public QDialog
 		MyDlg();
 	public slots:
 		void Seclect();
-		void Seclectold();
 	private:
 		Ui::Form ui;
 };
