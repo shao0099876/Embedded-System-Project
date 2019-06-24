@@ -760,54 +760,60 @@ char *DoubletoString(double f){//将double转换为char*类型
 	return str;//返回数组首地址
 }
 
+
+//下面这个函数是进行查询用户名为name时，查询该用户名的密码
+char *sqliteDB_opt_selectuserpassword(char *name){
+
+	sqlite3_stmt* stmt=NULL;
+ 	char* zErrMsg=NULL;
+	
+	char *_password;//结果
+	char s[]="no result";
+
+ 	int nret=0;
+	int rc;
+	char *sql=0;//动态生成的SQL语句
+	char tem_sql[256]="select password from user where name = '";//
+	char tem_sql0[5] = "'";
+	char tem_sql1[5] = ";";
+
+	sql = strcat(tem_sql,name);
+	sql = strcat(sql,tem_sql0);
+	sql = strcat(sql,tem_sql1);
+	nret=sqlite3_prepare(db,sql,strlen(sql),&stmt,(const char**)(&zErrMsg));
+	if(nret!=SQLITE_OK)
+		return s;
+ 	
+ 	while(1){ 
+  		nret=sqlite3_step(stmt);
+  		if(nret!=SQLITE_ROW)
+   			break;
+  		_password=( char *)sqlite3_column_text(stmt,0);
+ 	}
+	
+	sqlite3_finalize(stmt);
+	return _password;
+}
+
+char *Login(char *name,char *password){//登录时进行的身份验证
+	char nam[]="no name";
+	char pas[]="wrong password";
+	char ses[]="successed";
+	
+	//先判断是否存在用户名
+	int n=sqliteDB_existuser(name);
+	if(n==1){//不存在用户名,返回
+		return name;
+	}
+	if(n==0){//存在用户名，进行判断密码
+		char *dest=sqliteDB_opt_selectuserpassword(name);//查询该用户名的密码
+		if(strcmp(password,dest)==0){//密码相等
+			return ses;
+		}else{//密码不等
+			return pas;
+		}
+	}
+}
+
 #endif
-
-
-/*extern int sqliteDB_open();
-
-extern int sqliteDB_close();
-
-extern int sqliteDB_opt_addolduser(char *name,char *sex,int age,char *address,char *state);
-
-extern int sqliteDB_opt_adduser(char *name,char *sex,int age,char *phone,char *address,char *relation,char *password);
-
-extern int sqliteDB_opt_addpath(char *name,double jidu,double weidu,double high,double speed,char *timer);
-
-extern int sqliteDB_opt_deleteolduser(char *name);
-
-extern int sqliteDB_opt_deleteuser(char *name);
-
-extern int sqliteDB_opt_deletepath(char *name);
-
-extern int sqliteDB_opt_modify();
-
-extern char sqliteDB_opt_select_allolduser();
-
-extern char sqliteDB_opt_select_alluser();
-
-extern char sqliteDB_opt_select_allpath();
-
-extern char sqliteDB_opt_selectolduser(char *name);
-
-extern char sqliteDB_opt_selectuser(char *name);
-
-extern char sqliteDB_opt_selectpath(char *name);
-
-extern int sqliteDB_create_oldtable();
-
-extern int sqliteDB_create_pathtable();
-
-extern int sqliteDB_create_usertable();
-
-extern int sqliteDB_insert_records();//初始化里面加的值
-
-extern int sqliteDB_existolduser(char *name);
-
-extern int sqliteDB_existuser(char *name);
-
-extern int sqliteDB_existpath(char *name);
-*/
-
-
-
 
