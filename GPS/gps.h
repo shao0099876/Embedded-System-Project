@@ -1,7 +1,15 @@
 #ifndef _GPS_H
 #define _GPS_H
 //头文件引用区
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/signal.h>
 #include <termios.h>
+#include <pthread.h>
+#include <string.h>
+#include "YJSQLite.h"
 //预定义区
 #define BAUDRATE B9600
 #define COM1 "/dev/ttyS0"
@@ -40,14 +48,30 @@ static int baud=BAUDRATE;
 //函数声明区
 void* start(void* data);//调用该函数启动线程以实现自动数据采集
 //函数定义区
+char *DATE_TIME_TO_STR(date_time time){
+	char res[100];
+	sprintf(res,"%d%d%d%d%d%d",time.year,time.month,time.day,time.minute,time.second);
+	return res;
+}
 void writeSQLite(GPS_INFO *GPS)//改造成数据库读写函数
 {
-	// printf("DATE     : %ld-%02d-%02d \n",GPS->D.year,GPS->D.month,GPS->D.day);
-	// printf("TIME     :  %02d:%02d:%02d \n",GPS->D.hour,GPS->D.minute,GPS->D.second);
-	// printf("Latitude : %10.6f %c\n",GPS->latitude,GPS->NS);	
-	// printf("Longitude: %10.6f %c\n",GPS->longitude,GPS->EW);	
-	// printf("high     : %10.4f \n",GPS->high);	
-	// printf("STATUS   : %c\n",GPS->status);	
+	/*	sqliteDB_open();
+	char* a=sqliteDB_opt_select_alluser();
+	sqliteDB_close();
+	ui.textEdit->setText(a); */
+	sqliteDB_open();
+	char *name=DATE_TIME_TO_STR(GPS->D);
+	char *longitude;
+	sprintf(longitude,"%f",GPS->longitude);
+	char *latitude;
+	sprintf(latitude,"%f",GPS->latitude);
+	char *high;
+	sprintf(high,"%f",GPS->high);
+	char *speed;
+	sprintf(speed,"%f",GPS->speed);
+	char *timer=name;
+	sqliteDB_opt_addpath(name,longitude,latitude,high,speed,timer);
+	sqliteDB_close();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,10 +79,7 @@ void writeSQLite(GPS_INFO *GPS)//改造成数据库读写函数
 //0      7  0   4 6   0     6 8 0        90         0  3      0        9  	
 //$GPRMC,091400,A,3958.9870,N,11620.3278,E,000.0,000.0,120302,005.6,W*62	
 //$GPGGA,091400,3958.9870,N,11620.3278,E,1,03,1.9,114.2,M,-8.3,M,,*5E	
-
-
-static double get_double_number(char *s)
-{
+static double get_double_number(char *s){
 	char buf[128];
 	int i;
 	double rev;
@@ -72,8 +93,7 @@ static double get_double_number(char *s)
 }
 ////////////////////////////////////////////////////////////////////////////////
 //得到指定序号的逗号位置
-static int GetComma(int num,char *str)
-{
+static int GetComma(int num,char *str){
 	int i,j=0;
 	int len=strlen(str);
 	for(i=0;i<len;i++)
@@ -87,10 +107,7 @@ static int GetComma(int num,char *str)
 //#ifdef USE_BEIJING_TIMEZONE
 ////////////////////////////////////////////////////////////////////////////////
 //将世界时转换为北京时
-static void UTC2BTC(date_time *GPS)
-{
-
-//***************************************************
+static void UTC2BTC(date_time *GPS){
 //如果秒号先出,再出时间数据,则将时间数据+1秒
 		GPS->second++; //加一秒
 		if(GPS->second>59){
@@ -100,9 +117,7 @@ static void UTC2BTC(date_time *GPS)
 				GPS->minute=0;
 				GPS->hour++;
 			}
-		}	
-
-//***************************************************
+		}
 		GPS->hour+=8;
 		if(GPS->hour>23)
 		{
@@ -142,14 +157,7 @@ static void UTC2BTC(date_time *GPS)
 			}		
 		}
 }
-
-
-
-
-
-void gps_parse(char *line,GPS_INFO *GPS)
-////////////////////////////////////////////////////////////////////////////////
-{
+void gps_parse(char *line,GPS_INFO *GPS){
 	int i,tmp,start,end;
 	char c;
 	char* buf=line;
@@ -178,66 +186,38 @@ void gps_parse(char *line,GPS_INFO *GPS)
 		
 	}
 }
-void child_handler(int s)
-{
-  printf("stop!!!\n");
-   STOP=TRUE;
-}
-
 /*--------------------------------------------------------*/
-void* keyboard(void * data)		
-{
-    int c;
-	for (;;){
-		if((c=getchar()) == 10){
-       		STOP=TRUE;
-       		break ;
-		}
-		printf("key=%d\n",c);
-	}
-    return NULL;
-}
-/*--------------------------------------------------------*/
-void* writeData(void * data)
-{
-	while(1){
+void* writeData(void * data){
+	while(TRUE){
 		if(GET_GPS_OK){
 			GET_GPS_OK=FALSE;
-			printf("%s",GPS_BUF);
 			gps_parse(GPS_BUF,&gps_info);
 			writeSQLite(&gps_info);
 		}
 		usleep(100);
-		if(STOP)break;
 	}
-
+	return NULL;
 }
 /*--------------------------------------------------------*/
 /* 
 	READ GPS information handler 
 	if receive the enter char ,then copy the line to GPS_BUF.
 */
-void* receive(void * data)
-{
+void* receive(void * data){
 	int i=0;
-	char c;
 	char buf[1024];
 	GPS_INFO GPS;
-  	printf("read modem\n");
-  	while (STOP==FALSE) 
-  	{
-    	read(fd,&c,1); /* com port */
-    	buf[i++] = c;
-		if(c == '\n'){
+	while(TRUE){
+		char c;
+		read(file_device,&c,1);
+		buf[i++]=c;
+		if(c=='\n'){
 			strncpy(GPS_BUF,buf,i);
 			i=0;
 			GET_GPS_OK=TRUE;
 		}
-		if(STOP)break;
-		write(1,&c,1); /* stdout */
-  	}
-  	printf("exit from reading modem\n");
-  	return NULL; 
+	}
+	return NULL; 
 }
 void* start(void* data){
 	struct termios oldtio,newtio,oldstdtio,newstdtio;
@@ -264,20 +244,11 @@ void* start(void* data){
  	tcflush(file_device, TCIFLUSH);
 	tcsetattr(file_device,TCSANOW,&newtio);/*set attrib	  */
 	
-  	//pthread_create(&th_a, NULL, keyboard, 0);
   	pthread_create(&th_getdata, NULL, receive, 0);
   	pthread_create(&th_writeDB, NULL, writeData, 0);
-
-	tcsetattr(file_device,TCSANOW,&oldtio); /* restore old modem setings */
-  	tcsetattr(0,TCSANOW,&oldstdtio); /* restore old tty setings */
-  	close(fd);
-  	exit(0); 
+	//tcsetattr(file_device,TCSANOW,&oldtio); /* restore old modem setings */
+  	//tcsetattr(0,TCSANOW,&oldstdtio); /* restore old tty setings */
+  	//close(file_device);
+  	return NULL;
 }
-
-
-
-
-
-
-
 #endif
