@@ -1,41 +1,44 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-char* getcgidata(FILE* fp,char* requestmethod){
-    char *input;
-    int len;
-    int size=1024;
-    int i=0;
-    if(!strcmp(requestmethod,"GET")){
-        input=getenv("QUERY_STRING");
-        return input;
-    }
-    else if(!strcmp(requestmethod,"POST")){
-        len=atio(getenv("CONTENT_LENGTH"));
-        input=(char*)malloc(sizeof(char)*(size+1));
-        if(len==0){
-            input[0]='\0';
-            return input;
-        }
-        while(1){
-            input[i]=(char)fgetc(fp);
-            if(i==size){
-                input[i+1]='\0';
-                return input;
-            }
-            --len;
-            if(feof(fp)||(!(len))){
-                i++;
-                input[i]='\0';
-                return input;
-            }
-            i++;
-        }
-    }
-    return NULL;
-}
+//#include"YJSQLite.h"
 int main(){
-    char *req_method=getenv("REQUEST_METHOD");
-    char *input=getcgidata(stdin,req_method);
-
+    //printf("Contenttype:text/plain\n\n");
+    printf("Content-type: text/html\n\n");
+    char *data=getenv("QUERY_STRING");
+    if(data==NULL){
+        printf("error");
+        return 0;
+    }
+    char* pos=strstr(data,"username");
+    int length=0;
+    while((char)*(pos+length)!='&'){
+        length+=1;
+    }
+    char username[20];
+    for(int i=0;i<=length;i++){
+        username[i]='\0';
+    }
+    strncpy(username,pos,length);
+    pos=strstr(data,"password");
+    length=0;
+    while((char)*(pos+length)!='&'){
+        length+=1;
+    }
+    char password[20];
+    for(int i=0;i<=length;i++){
+        password[i]='\0';
+    }
+    strncpy(password,pos,length);
+    //sqliteDB_open();
+    //char* a=Login(username,password);
+    char* a;
+    if(strcmp(a,"successed")==0){
+        printf("<script>window.location.href=\"/map.html\"</script>\n");
+    }
+    else{
+        printf("error");
+    }
+    //sqliteDB_close();
+    return 0;
 }
