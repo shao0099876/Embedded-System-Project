@@ -471,6 +471,59 @@ char *sqliteDB_opt_select_allpath(){//按照时间降序输出
  	return dest;
 }
 
+char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
+
+	sqlite3_stmt* stmt=NULL;
+ 	char* zErrMsg=NULL;
+
+	char dest[1000]={0,};//结果
+	char s[]="no result";
+
+ 	int nret=sqlite3_prepare(db,"SELECT * FROM path ORDER BY timer DESC;",strlen("SELECT * FROM path ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
+ 	
+	if(nret!=SQLITE_OK)
+  		return s;
+	printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	printf("\t------------------------------------------------------------\n");
+
+ 	while(1){ 
+  		nret=sqlite3_step(stmt);
+  		if(nret!=SQLITE_ROW)
+  	 		break;
+  		char *name=( char *)sqlite3_column_text(stmt,0);
+		char *jidu=( char *)sqlite3_column_text(stmt,1);
+		char *weidu=( char *)sqlite3_column_text(stmt,2);
+		char *high=( char *)sqlite3_column_text(stmt,3);
+		char *speed=( char *)sqlite3_column_text(stmt,4);
+		char *timer=( char *)sqlite3_column_text(stmt,5);
+		char *spl="#";
+		
+		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
+
+
+		strcat(dest,name);
+		strcat(dest,spl);
+		strcat(dest,jidu);
+		strcat(dest,spl);
+		strcat(dest,weidu);
+		strcat(dest,spl);
+		strcat(dest,high);
+		strcat(dest,spl);
+		strcat(dest,speed);
+		strcat(dest,spl);
+		strcat(dest,timer);
+		strcat(dest,spl);
+		break;//就只将最新的路径信息返回
+ 	}
+
+ 	sqlite3_finalize(stmt);
+ 	return dest;
+}
+
+
+
+
+
 /*** 查询符合查询条件的记录* @param name*/
 char *sqliteDB_opt_selectolduser(char *name){
 
