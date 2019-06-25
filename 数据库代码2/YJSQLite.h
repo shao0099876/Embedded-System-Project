@@ -28,7 +28,7 @@ int sqliteDB_create_oldtable(){
 int sqliteDB_create_pathtable(){
  
 	char* zErrMsg=NULL;
- 	char sql[256]="CREATE TABLE path(name varchar(40) primary key,jidu varchar(40) not null,weidu varchar(40) not null,high varchar(40) not null,speed varchar(40) not null,timer varchar(100) not null);";
+ 	char sql[256]="CREATE TABLE path(name varchar(40) primary key,jidu varchar(40) not null,weidu varchar(40) not null,high varchar(40) not null,speed varchar(40) not null,timer varchar(100) primary key not null);";
  
 	int nret=sqlite3_exec(db,sql,NULL,NULL,&zErrMsg);
 
@@ -66,10 +66,18 @@ int sqliteDB_insert_records()
  	char sql2[256]="INSERT INTO user VALUES('june','man','48','433443','erth','son','0000');";
 	char sql3[256]="INSERT INTO user VALUES('marry','woman','45','433444','erth','wife of son','0000');";
 
+	char sql4[256]="INSERT INTO path VALUES('QingDao','11','22','33','44','2019-6-25-10-08');";
+	char sql5[256]="INSERT INTO path VALUES('JiNan','01','02','03','04','2019-6-25-10-09');";
+	char sql6[256]="INSERT INTO path VALUES('WeiHai','10','20','30','40','2019-6-26-10-09');";
+
  	int nret=sqlite3_exec(db,sql1,NULL,NULL,&zErrMsg);
 
  	nret=sqlite3_exec(db,sql2,NULL,NULL,&zErrMsg);
 	nret=sqlite3_exec(db,sql3,NULL,NULL,&zErrMsg);
+
+	nret=sqlite3_exec(db,sql4,NULL,NULL,&zErrMsg);
+	nret=sqlite3_exec(db,sql5,NULL,NULL,&zErrMsg);
+	nret=sqlite3_exec(db,sql6,NULL,NULL,&zErrMsg);
 
  	if(nret!=SQLITE_OK){
  	 	printf("%s\n",sqlite3_errmsg(db));
@@ -92,16 +100,17 @@ int sqliteDB_open(){
 		sqlite3_close(db);
 		exit(1);
 	}
-	printf("\nOpen sucess!");
+	printf("\nOpen sucess!\n");
 
-	if(!sqliteDB_create_usertable())
-		printf("\ntable exist");	
-	if(!sqliteDB_create_pathtable())
-		printf("\ntable exist");	
-	if(!sqliteDB_create_oldtable())
-		printf("\ntable exist");
+//如果数据库里面不存在表的时候，就将下面的注释去掉注释
+//	if(!sqliteDB_create_usertable())
+//		printf("\ntable exist");	
+//	if(!sqliteDB_create_pathtable())
+//		printf("\ntable exist");	
+//	if(!sqliteDB_create_oldtable())
+//		printf("\ntable exist");
 
-	sqliteDB_insert_records();//初始化数据
+//	sqliteDB_insert_records();//初始化数据
 	return 0;//成功
 }
 
@@ -351,13 +360,8 @@ char *sqliteDB_opt_select_allolduser(){
 		char *address=( char *)sqlite3_column_text(stmt,3);
 		char *state=( char *)sqlite3_column_text(stmt,4);
 		char *spl="#";
-		printf("\t%s\t\t%s\t\t%d\t\t%s\t\t%s\n",name,sex,age,address,state);//测试
-  		/*char name[50]="sqlite3_column_text(stmt,0)";
-		char sex[50]="sqlite3_column_text(stmt,1)";
-  		char age[50]="sqlite3_column_text(stmt,2)";
-		char address[200]="sqlite3_column_text(stmt,3)";
-		char state[200]="sqlite3_column_text(stmt,4)";*/
-
+		printf("\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n",name,sex,age,address,state);//测试
+  
 		strcat(dest,name);
 		strcat(dest,spl);
 		strcat(dest,sex);
@@ -385,7 +389,7 @@ char *sqliteDB_opt_select_alluser(){
  	
 	if(nret!=SQLITE_OK)
   		return s;
- 	printf("\n\tname\t\tsex\t\tage\t\tphone\t\taddress\t\trelation\n");//测试
+ 	printf("\n\tname\tsex\tage\tphone\taddress\trelation\n");//测试
  	printf("\t------------------------------------------------------------\n");
  	while(1){ 
   		nret=sqlite3_step(stmt);
@@ -398,13 +402,8 @@ char *sqliteDB_opt_select_alluser(){
 		char *address=( char *)sqlite3_column_text(stmt,4);
 		char *relation=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
-  		/*char name[50]="sqlite3_column_text(stmt,0)";
-		char sex[50]="sqlite3_column_text(stmt,1)";
-  		char age[50]="sqlite3_column_text(stmt,2)";
-		char phone[50]="sqlite3_column_text(stmt,3)";
-		char address[200]="sqlite3_column_text(stmt,4)";
-		char relation[50]="sqlite3_column_text(stmt,5)";*/
-		printf("\t%s\t\t%s\t\t%d\t\t%s\t\t%s\t\t%s\n",name,sex,age,phone,address,relation);//测试
+  		
+		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,sex,age,phone,address,relation);//测试
 
 		strcat(dest,name);
 		strcat(dest,spl);
@@ -424,7 +423,7 @@ char *sqliteDB_opt_select_alluser(){
 	printf("%s\n",dest);//测试
  	return dest;
 }
-char *sqliteDB_opt_select_allpath(){
+char *sqliteDB_opt_select_allpath(){//按照时间降序输出
 
 	sqlite3_stmt* stmt=NULL;
  	char* zErrMsg=NULL;
@@ -432,10 +431,13 @@ char *sqliteDB_opt_select_allpath(){
 	char dest[1000]={0,};//结果
 	char s[]="no result";
 
- 	int nret=sqlite3_prepare(db,"SELECT * FROM path;",strlen("SELECT * FROM path;"),&stmt,(const char**)(&zErrMsg));
+ 	int nret=sqlite3_prepare(db,"SELECT * FROM path ORDER BY timer DESC;",strlen("SELECT * FROM path ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
  	
 	if(nret!=SQLITE_OK)
-  		return s;
+  		return s;
+	printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	printf("\t------------------------------------------------------------\n");
+
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -447,12 +449,8 @@ char *sqliteDB_opt_select_allpath(){
 		char *speed=( char *)sqlite3_column_text(stmt,4);
 		char *timer=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
-  		/*char name[50]="sqlite3_column_text(stmt,0)";
-		char jidu[50]="sqlite3_column_text(stmt,1)";
-		char weidu[50]="sqlite3_column_text(stmt,2)";
-		char high[50]="sqlite3_column_text(stmt,3)";
-		char speed[50]="sqlite3_column_text(stmt,4)";
-		char timer[50]="sqlite3_column_text(stmt,5)";*/
+		
+		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
 
 
 		strcat(dest,name);
@@ -472,6 +470,59 @@ char *sqliteDB_opt_select_allpath(){
  	sqlite3_finalize(stmt);
  	return dest;
 }
+
+char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
+
+	sqlite3_stmt* stmt=NULL;
+ 	char* zErrMsg=NULL;
+
+	char dest[1000]={0,};//结果
+	char s[]="no result";
+
+ 	int nret=sqlite3_prepare(db,"SELECT * FROM path ORDER BY timer DESC;",strlen("SELECT * FROM path ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
+ 	
+	if(nret!=SQLITE_OK)
+  		return s;
+	printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	printf("\t------------------------------------------------------------\n");
+
+ 	while(1){ 
+  		nret=sqlite3_step(stmt);
+  		if(nret!=SQLITE_ROW)
+  	 		break;
+  		char *name=( char *)sqlite3_column_text(stmt,0);
+		char *jidu=( char *)sqlite3_column_text(stmt,1);
+		char *weidu=( char *)sqlite3_column_text(stmt,2);
+		char *high=( char *)sqlite3_column_text(stmt,3);
+		char *speed=( char *)sqlite3_column_text(stmt,4);
+		char *timer=( char *)sqlite3_column_text(stmt,5);
+		char *spl="#";
+		
+		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
+
+
+		strcat(dest,name);
+		strcat(dest,spl);
+		strcat(dest,jidu);
+		strcat(dest,spl);
+		strcat(dest,weidu);
+		strcat(dest,spl);
+		strcat(dest,high);
+		strcat(dest,spl);
+		strcat(dest,speed);
+		strcat(dest,spl);
+		strcat(dest,timer);
+		strcat(dest,spl);
+		break;//就只将最新的路径信息返回
+ 	}
+
+ 	sqlite3_finalize(stmt);
+ 	return dest;
+}
+
+
+
+
 
 /*** 查询符合查询条件的记录* @param name*/
 char *sqliteDB_opt_selectolduser(char *name){
@@ -506,12 +557,6 @@ char *sqliteDB_opt_selectolduser(char *name){
 		char *_address=( char *)sqlite3_column_text(stmt,3);
 		char *_state=( char *)sqlite3_column_text(stmt,4);
 		char *spl="#";
-  		/*char _name[50]="sqlite3_column_text(stmt,0)";
-		char _sex[50]="sqlite3_column_text(stmt,1)";
-  		char _age[50]="sqlite3_column_text(stmt,2)";
-		char _address[200]="sqlite3_column_text(stmt,3)";
-		char _state[200]="sqlite3_column_text(stmt,4)";*/
-
 
 		strcat(dest,_name);
 		strcat(dest,spl);
@@ -561,12 +606,6 @@ char *sqliteDB_opt_selectuser(char *name){
 		char *_address=( char *)sqlite3_column_text(stmt,4);
 		char *_relation=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
-		/*char _name[50]="sqlite3_column_text(stmt,0)";
-		char _sex[50]="sqlite3_column_text(stmt,1)";
-  		char _age[50]="sqlite3_column_text(stmt,2)";
-		char _phone[50]="sqlite3_column_text(stmt,3)";
-		char _address[200]="sqlite3_column_text(stmt,4)";
-		char _relation[50]="sqlite3_column_text(stmt,5)";*/
 
 		strcat(dest,_name);
 		strcat(dest,spl);
@@ -618,12 +657,6 @@ char *sqliteDB_opt_selectpath(char *name){
 		 char *_speed=( char *)sqlite3_column_text(stmt,4);
 		 char *_timer=( char *)sqlite3_column_text(stmt,5);
 		 char *spl="#";
-		/*char _name[50]="sqlite3_column_text(stmt,0)";
-		char _jidu[50]="sqlite3_column_text(stmt,1)";
-		char _weidu[50]="sqlite3_column_text(stmt,2)";
-		char _high[50]="sqlite3_column_text(stmt,3)";
-		char _speed[50]="sqlite3_column_text(stmt,4)";
-		char _timer[50]="sqlite3_column_text(stmt,5)";*/
 
 		strcat(dest,_name);
 		strcat(dest,spl);
@@ -755,8 +788,8 @@ double StringtoDouble(char *str){//将char*转换为double类型
 }
 
 char *DoubletoString(double f){//将double转换为char*类型
-	char str[50];
-	sprintf(str,"%f",f);
+	char str[100];
+	sprintf(str,"%.5lf",f);
 	return str;//返回数组首地址
 }
 
@@ -803,7 +836,7 @@ char *Login(char *name,char *password){//登录时进行的身份验证
 	//先判断是否存在用户名
 	int n=sqliteDB_existuser(name);
 	if(n==1){//不存在用户名,返回
-		return name;
+		return nam;
 	}
 	if(n==0){//存在用户名，进行判断密码
 		char *dest=sqliteDB_opt_selectuserpassword(name);//查询该用户名的密码
