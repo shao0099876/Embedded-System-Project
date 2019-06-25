@@ -100,7 +100,7 @@ int sqliteDB_open(){
 		sqlite3_close(db);
 		exit(1);
 	}
-	printf("\nOpen sucess!");
+	printf("\nOpen sucess!\n");
 
 //如果数据库里面不存在表的时候，就将下面的注释去掉注释
 //	if(!sqliteDB_create_usertable())
@@ -735,8 +735,8 @@ double StringtoDouble(char *str){//将char*转换为double类型
 }
 
 char *DoubletoString(double f){//将double转换为char*类型
-	char str[50];
-	sprintf(str,"%f",f);
+	char str[100];
+	sprintf(str,"%.5lf",f);
 	return str;//返回数组首地址
 }
 
