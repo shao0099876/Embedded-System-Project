@@ -12,8 +12,8 @@
     </head>
     <body>
         <nav>
-            <a href="">设置</a>
-            <a href="">地图</a>
+            <a href="/area.html">电子围栏</a>
+            <a href="/map.html">地图</a>
         </nav>
         <div id="allmap"></div>
     </body>
@@ -30,4 +30,57 @@
         ]}));	  
 	map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
 	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+    function refresh(){
+        // 默认停靠位置和偏移量
+        this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
+        this.defaultOffset = new BMap.Size(10, 10);
+	}
+
+	// 通过JavaScript的prototype属性继承于BMap.Control
+	refresh.prototype = new BMap.Control();
+
+	// 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+	// 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+	refresh.prototype.initialize = function(map){
+        // 创建一个DOM元素
+        var div = document.createElement("div");
+        // 添加文字说明
+        div.appendChild(document.createTextNode("刷新"));
+        // 设置样式
+        div.style.cursor = "pointer";
+        div.style.border = "1px solid gray";
+        div.style.backgroundColor = "white";
+        // 绑定事件,点击一次放大两级
+        div.onclick = function(e){
+            var xmlhttp=new XMLHttpRequest();
+            xmlhttp.open("GET","/cgi-bin/refreshpos.cgi?operate=refresh",true);
+            xmlhttp.send();
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    //var map = new BMap.Map("allmap");
+                    var text=xmlhttp.responseText.split(",");
+                    var langitude=Number.parseFloat(text[0]);
+                    console.log(langitude);
+                    var latitude=Number.parseFloat(text[1]);
+                    console.log(latitude);
+                    var point=new BMap.Point(langitude,latitude);//var point=BMap.Point(122.067,37.517);
+                    map.centerAndZoom(point,15);
+                    var marker = new BMap.Marker(point);
+                    map.addOverlay(marker);
+                }
+            }
+        }
+        // 添加DOM元素到地图中
+        map.getContainer().appendChild(div);
+        // 将DOM元素返回
+        return div;
+	}
+	// 创建控件
+	var refreshCtrl = new refresh();
+    
+	// 添加到地图当中
+	map.addControl(refreshCtrl);
 </script>

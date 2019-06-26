@@ -1,36 +1,19 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-char* getcgidata(FILE* fp,char* requestmethod){
-    char *input;
-    int len;
-    int size=1024;
-    int i=0;
-    if(!strcmp(requestmethod,"GET")){
-        input=getenv("QUERY_STRING");
-        return input;
+char *analyze(char* raw_data,char* data){
+    char* pos=strstr(raw_data,data);
+    int length=0;
+    while(length<strlen(pos)&&(char)*(pos+length)!='&'){
+        length+=1;
     }
-    else if(!strcmp(requestmethod,"POST")){
-        len=atoi(getenv("CONTENT_LENGTH"));
-        input=(char*)malloc(sizeof(char)*(size+1));
-        if(len==0){
-            input[0]='\0';
-            return input;
-        }
-        while(1){
-            input[i]=(char)fgetc(fp);
-            if(i==size){
-                input[i+1]='\0';
-                return input;
-            }
-            --len;
-            if(feof(fp)||(!(len))){
-                i++;
-                input[i]='\0';
-                return input;
-            }
-            i++;
-        }
-    }
-    return NULL;
+    char mid[50];
+    memset(mid,'\0',sizeof(char)*50);
+    strncpy(mid,pos,length);
+    pos=strstr(mid,"=");
+    pos=pos+1;
+    char* res=malloc(sizeof(char)*strlen(pos)+1);
+    strcpy(res,pos);
+    res[strlen(pos)]='\0';
+    return res;
 }
