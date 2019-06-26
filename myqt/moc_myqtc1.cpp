@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'myqtc1.h'
 **
-** Created: Sun Jun 23 19:09:37 2019
+** Created: Wed Jun 26 15:28:59 2019
 **      by: The Qt Meta Object Compiler version 59 (Qt 4.4.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,19 +23,20 @@ static const uint qt_meta_data_MyDlg[] = {
        1,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   10, // methods
+       3,   10, // methods
        0,    0, // properties
        0,    0, // enums/sets
 
  // slots: signature, parameters, type, tag, flags
        7,    6,    6,    6, 0x0a,
       17,    6,    6,    6, 0x0a,
+      30,    6,    6,    6, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_MyDlg[] = {
-    "MyDlg\0\0Seclect()\0Seclectold()\0"
+    "MyDlg\0\0Seclect()\0Seclectold()\0web()\0"
 };
 
 const QMetaObject MyDlg::staticMetaObject = {
@@ -65,8 +66,9 @@ int MyDlg::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: Seclect(); break;
         case 1: Seclectold(); break;
+        case 2: web(); break;
         }
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }

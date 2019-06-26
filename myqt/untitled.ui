@@ -15,8 +15,8 @@
   <widget class="QPushButton" name="pushButton" >
    <property name="geometry" >
     <rect>
-     <x>490</x>
-     <y>320</y>
+     <x>10</x>
+     <y>370</y>
      <width>131</width>
      <height>41</height>
     </rect>
@@ -25,28 +25,11 @@
     <string>selectuser</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>300</y>
-     <width>411</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <property name="html" >
-    <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'文鼎PL细上海宋Uni'; font-size:18pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Bitstream Charter'; font-size:9pt;">监护人信息&lt;/p>&lt;/body>&lt;/html></string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton_2" >
    <property name="geometry" >
     <rect>
-     <x>490</x>
-     <y>410</y>
+     <x>190</x>
+     <y>380</y>
      <width>131</width>
      <height>41</height>
     </rect>
@@ -55,15 +38,168 @@ p, li { white-space: pre-wrap; }
     <string>selectold</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit_2" >
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>450</x>
+     <y>230</y>
+     <width>171</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>160400202 杨蛟
+160400209 刘轩
+160400618 邵若忱</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="oldtable" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>260</y>
-     <width>471</width>
-     <height>41</height>
+     <y>280</y>
+     <width>441</width>
+     <height>91</height>
     </rect>
    </property>
+   <row>
+    <property name="text" >
+     <string>old</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>name</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>sex</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>age</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>address</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>state</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QTableWidget" name="usertable" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>170</y>
+     <width>441</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text" >
+     <string>user</string>
+    </property>
+   </row>
+   <row>
+    <property name="text" >
+     <string>user</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>name</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>sex</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>age</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>phone</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>addres</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>relation</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4" >
+   <property name="geometry" >
+    <rect>
+     <x>490</x>
+     <y>170</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>GPS</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>631</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text" >
+     <string>GPS</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>addrname</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>longitude</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>latitude</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>high</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>speed</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>time</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>

@@ -1,0 +1,10 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include"gps.h"
+#include<pthread.h>
+using namespace std;
+int main(){
+  	pthread_t th_gps;
+  	pthread_create(&th_gps,NULL,start,0);
+	sleep(10000);
+}

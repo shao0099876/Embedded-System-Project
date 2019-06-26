@@ -1,6 +1,7 @@
 #ifndef __DLG_H_
 #define __DLG_H_
 #include<QDialog>
+#include<QtWebKit/QWebView>
 #include"ui_untitled.h"
 class MyDlg : public QDialog
 {
@@ -9,6 +10,9 @@ class MyDlg : public QDialog
 		MyDlg();
 	public slots:
 		void Seclect();
+		void Seclectold();
+		void path();
+		void web();
 	private:
 		Ui::Form ui;
 };
