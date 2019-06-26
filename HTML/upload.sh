@@ -13,4 +13,3 @@ cd ..
 scp Index.html srcserver:/var/www/html/
 scp map.html srcserver:/var/www/html/
 scp area.html srcserver:/var/www/html/
-scp editpoint.html srcserver:/var/www/html/
