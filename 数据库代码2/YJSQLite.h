@@ -93,24 +93,24 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName);
 int sqliteDB_open(){
 
 	int rc;//操作标志
-	printf("开始连接数据库s\n");
+	//printf("开始连接数据库s\n");
 	rc = sqlite3_open("YJDB.db", &db);
 	if( rc ){
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		exit(1);
 	}
-	printf("\nOpen sucess!\n");
+	//printf("\nOpen sucess!\n");
 
 //如果数据库里面不存在表的时候，就将下面的注释去掉注释
-//	if(!sqliteDB_create_usertable())
-//		printf("\ntable exist");	
-//	if(!sqliteDB_create_pathtable())
-//		printf("\ntable exist");	
-//	if(!sqliteDB_create_oldtable())
-//		printf("\ntable exist");
+	if(!sqliteDB_create_usertable())
+		printf("\ntable exist");	
+	if(!sqliteDB_create_pathtable())
+		printf("\ntable exist");	
+	if(!sqliteDB_create_oldtable())
+		printf("\ntable exist");
 
-//	sqliteDB_insert_records();//初始化数据
+	sqliteDB_insert_records();//初始化数据
 	return 0;//成功
 }
 
@@ -346,10 +346,10 @@ char *sqliteDB_opt_select_allolduser(){
  	char* zErrMsg=NULL;
  	
  	int nret=sqlite3_prepare(db,"SELECT * FROM olduser;",strlen("SELECT * FROM olduser;"),&stmt,(const char**)(&zErrMsg));
- 	
+ 	int n=1;
 	if(nret!=SQLITE_OK)
-  		return s;	printf("\n\tname\t\tsex\t\tage\t\taddress\t\tstate\n");//测试数据库写对没有
- 	printf("\t------------------------------------------------------------\n");//测试
+  		return s;	//printf("\n\tname\t\tsex\t\tage\t\taddress\t\tstate\n");//测试数据库写对没有
+ 	//printf("\t------------------------------------------------------------\n");//测试
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -360,8 +360,11 @@ char *sqliteDB_opt_select_allolduser(){
 		char *address=( char *)sqlite3_column_text(stmt,3);
 		char *state=( char *)sqlite3_column_text(stmt,4);
 		char *spl="#";
-		printf("\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n",name,sex,age,address,state);//测试
+		//printf("\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n",name,sex,age,address,state);//测试
   
+		if(n==0){
+			strcat(dest,spl);
+		}
 		strcat(dest,name);
 		strcat(dest,spl);
 		strcat(dest,sex);
@@ -371,7 +374,7 @@ char *sqliteDB_opt_select_allolduser(){
 		strcat(dest,address);
 		strcat(dest,spl);
 		strcat(dest,state);
-		strcat(dest,spl);
+		n=0;
  	}
 
  	sqlite3_finalize(stmt);
@@ -389,9 +392,10 @@ char *sqliteDB_opt_select_alluser(){
  	
 	if(nret!=SQLITE_OK)
   		return s;
- 	printf("\n\tname\tsex\tage\tphone\taddress\trelation\n");//测试
- 	printf("\t------------------------------------------------------------\n");
- 	while(1){ 
+ 	//printf("\n\tname\tsex\tage\tphone\taddress\trelation\n");//测试
+ 	//printf("\t------------------------------------------------------------\n");
+	int n=1; 	
+	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
   	 		break;
@@ -403,8 +407,10 @@ char *sqliteDB_opt_select_alluser(){
 		char *relation=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
   		
-		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,sex,age,phone,address,relation);//测试
-
+		//printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,sex,age,phone,address,relation);//测试
+		if(n==0){
+			strcat(dest,spl);
+		}
 		strcat(dest,name);
 		strcat(dest,spl);
 		strcat(dest,sex);
@@ -416,7 +422,7 @@ char *sqliteDB_opt_select_alluser(){
 		strcat(dest,address);
 		strcat(dest,spl);
 		strcat(dest,relation);
-		strcat(dest,spl);
+		n=0;
   }
 
  	sqlite3_finalize(stmt);
@@ -435,9 +441,9 @@ char *sqliteDB_opt_select_allpath(){//按照时间降序输出
  	
 	if(nret!=SQLITE_OK)
   		return s;
-	printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
- 	printf("\t------------------------------------------------------------\n");
-
+	//printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	//printf("\t------------------------------------------------------------\n");
+	int n=1;
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -450,8 +456,10 @@ char *sqliteDB_opt_select_allpath(){//按照时间降序输出
 		char *timer=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
 		
-		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
-
+		//printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
+		if(n==0){
+			strcat(dest,spl);
+		}
 
 		strcat(dest,name);
 		strcat(dest,spl);
@@ -464,10 +472,11 @@ char *sqliteDB_opt_select_allpath(){//按照时间降序输出
 		strcat(dest,speed);
 		strcat(dest,spl);
 		strcat(dest,timer);
-		strcat(dest,spl);
+		n=0;
  	}
 
  	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
  	return dest;
 }
 
@@ -483,9 +492,9 @@ char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
  	
 	if(nret!=SQLITE_OK)
   		return s;
-	printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
- 	printf("\t------------------------------------------------------------\n");
-
+	//printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	//printf("\t------------------------------------------------------------\n");
+	int n=1;
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -498,8 +507,10 @@ char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
 		char *timer=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
 		
-		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
-
+		//printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
+		if(n==0){
+			strcat(dest,spl);
+		}
 
 		strcat(dest,name);
 		strcat(dest,spl);
@@ -512,17 +523,14 @@ char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
 		strcat(dest,speed);
 		strcat(dest,spl);
 		strcat(dest,timer);
-		strcat(dest,spl);
+		n=0;
 		break;//就只将最新的路径信息返回
  	}
 
  	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
  	return dest;
 }
-
-
-
-
 
 /*** 查询符合查询条件的记录* @param name*/
 char *sqliteDB_opt_selectolduser(char *name){
@@ -547,6 +555,7 @@ char *sqliteDB_opt_selectolduser(char *name){
 	nret=sqlite3_prepare(db,sql,strlen(sql),&stmt,(const char**)(&zErrMsg));
 	if(nret!=SQLITE_OK)
 		return s;
+	int n=1;
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -557,6 +566,10 @@ char *sqliteDB_opt_selectolduser(char *name){
 		char *_address=( char *)sqlite3_column_text(stmt,3);
 		char *_state=( char *)sqlite3_column_text(stmt,4);
 		char *spl="#";
+		
+		if(n==0){
+			strcat(dest,spl);
+		}
 
 		strcat(dest,_name);
 		strcat(dest,spl);
@@ -567,10 +580,11 @@ char *sqliteDB_opt_selectolduser(char *name){
 		strcat(dest,_address);
 		strcat(dest,spl);
 		strcat(dest,_state);
-		strcat(dest,spl);
+		n=0;
  	}
 	
 	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
 	return dest;
 }
 char *sqliteDB_opt_selectuser(char *name){
@@ -595,6 +609,7 @@ char *sqliteDB_opt_selectuser(char *name){
 	if(nret!=SQLITE_OK)
 		return s;
  	
+	int n=1;
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -607,6 +622,9 @@ char *sqliteDB_opt_selectuser(char *name){
 		char *_relation=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
 
+		if(n==0){
+			strcat(dest,spl);
+		}
 		strcat(dest,_name);
 		strcat(dest,spl);
 		strcat(dest,_sex);
@@ -618,10 +636,11 @@ char *sqliteDB_opt_selectuser(char *name){
 		strcat(dest,_address);
 		strcat(dest,spl);
 		strcat(dest,_relation);
-		strcat(dest,spl);
+		n=0;
  	}
 	
 	sqlite3_finalize(stmt);
+	printf("%s\n",dest);//测试
 	return dest;
 }
 char *sqliteDB_opt_selectpath(char *name){
@@ -645,7 +664,8 @@ char *sqliteDB_opt_selectpath(char *name){
 
 	nret=sqlite3_prepare(db,sql,strlen(sql),&stmt,(const char**)(&zErrMsg));
 	if(nret!=SQLITE_OK)
-		return s;
+		return s;
+	int n=1;
  	while(1){ 
   		nret=sqlite3_step(stmt);
   		if(nret!=SQLITE_ROW)
@@ -658,6 +678,9 @@ char *sqliteDB_opt_selectpath(char *name){
 		 char *_timer=( char *)sqlite3_column_text(stmt,5);
 		 char *spl="#";
 
+		if(n==0){
+			strcat(dest,spl);
+		}
 		strcat(dest,_name);
 		strcat(dest,spl);
 		strcat(dest,_jidu);
@@ -669,12 +692,12 @@ char *sqliteDB_opt_selectpath(char *name){
 		strcat(dest,_speed);
 		strcat(dest,spl);
 		strcat(dest,_timer);
-		strcat(dest,spl);
+		n=0;
   		
  	}
 	
 	sqlite3_finalize(stmt);
-	
+	printf("%s\n",dest);//测试
 	return dest;
 }
 
