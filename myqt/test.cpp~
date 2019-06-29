@@ -1,10 +1,52 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"gps.h"
-#include<pthread.h>
-using namespace std;
+#include<string.h>
+#include"/arm2410cl/Trolltech/qt-embedded-4.4.0/myqt/YJSQLite.h"
+
 int main(){
-  	pthread_t th_gps;
-  	pthread_create(&th_gps,NULL,start,0);
-	sleep(10000);
+		
+	char *s="june";
+	char *p="0000";
+	int a,b;
+
+		sqliteDB_open();
+      //p=sqliteDB_opt_selectuserpassword(s);
+		//a=Login(s,p);
+		//b=sqliteDB_existuser(s,p);
+		//sqlitB_close();
+	   //printf("%s\n",p);
+		char *name="0";           //P1|48.023844|14.986909|0|0|P1
+		char *langitude="0";
+		char *latitude="0";
+		char *altitude="0";
+	   char *speed="0";
+		char *time="0";
+		char *pass="0";	   	
+		char** res=sqliteDB_opt_newpath_src();
+		printf("%s\n",res[1]);
+		printf("%s\n",res[2]);
+		sqliteDB_close();
+	   //printf("%d",b);
+		int w=sqliteDB_open();
+		char* name1="0";           //P1|48.023844|14.986909|0|0|P1
+		char* langitude1="0";
+		char* latitude1="0";
+		char* altitude1="0";
+	   char* speed1="0";
+		char* time1="0";	   	
+		int res1=sqliteDB_opt_addpath(name1,langitude1,latitude1,altitude1,speed1,time1);
+		//printf("%d\n",w);
+		sqliteDB_close();
+
+		sqliteDB_open();		
+		char* name2="t3";           //P1|48.023844|14.986909|0|0|P1
+		char* langitude2="48.023844";
+		char* latitude2="48.023844";
+		char* altitude2="48.023844";
+	   char* speed2="48.023844";
+		char* time2="t3";	   	
+		int res2=sqliteDB_opt_addpath(name2,langitude2,latitude2,altitude2,speed2,time2);
+		//printf("%d\n",res2);
+		sqliteDB_close();
+	return 0;
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>电子围栏设置</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <style type="text/css">
+            body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+        </style>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ju5bl8QwoHYUgr1QbDGLymXxH9xIm4Qf"></script>
+    </head>
+    <body>
+        <nav>
+            <a href="/area.html">电子围栏</a>
+            <a href="/map.html">地图</a>
+        </nav>
+        <div>
+            添加点请直接点击地图添加，最多9个点<br>
+            <button onclick="delpoint()">删除最后添加的点</button>
+        </div>
+        <div id="allmap"></div>
+    </body>
+</html>
+<script type="text/javascript">
+    function delpoint(){
+        var xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","/cgi-bin/getpointlist.cgi?operate=getpointlist",true);
+        xmlhttp.send();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                var text=xmlhttp.responseText;
+                if(text=="no result"){
+                    alert("无点可删");
+                    return;
+                }
+                text=text.split("#");
+                var res=new Array();
+                for(var i=0;i<text.length;i+=6){
+                    if(text[i+5].charAt(0)=="P"){
+                        res.push({name:text[i+0],langitude:text[i+1],latitude:text[i+2],altitude:text[i+3],speed:text[i+4],time:text[i+5]});
+                    }
+                }
+                var xmlhttp1=new XMLHttpRequest();
+                xmlhttp1.open("POST","/cgi-bin/delpoint.cgi",true);
+                xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xmlhttp1.send("name=P"+(res.length-1).toString());
+            }
+        }
+    }
+    function addpoint(e){
+        console.log("addpoint");
+        var x=e.point.lng;
+        var y=e.point.lat;
+        var xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","/cgi-bin/getpointlist.cgi?operate=getpointlist",true);
+        xmlhttp.send();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                var text=xmlhttp.responseText;
+                if(text=="\nno result"){
+                    var xmlhttp1=new XMLHttpRequest();
+                    xmlhttp1.open("POST","/cgi-bin/addpoint.cgi",true);
+                    xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    xmlhttp1.send("name=P0&langitude="+x.toString()+"&latitude="+y.toString());
+							xmlhttp1.onreadystatechange=function(){if (xmlhttp.readyState==4 && xmlhttp.status==200){alert(xmlhttp1.responseText);}}
+                    return;
+                }
+                text=text.split("#");
+                var res=new Array();
+                for(var i=0;i<text.length;i+=6){
+                    if(text[i+5].charAt(0)=="P"){
+                        res.push({name:text[i+0],langitude:text[i+1],latitude:text[i+2],altitude:text[i+3],speed:text[i+4],time:text[i+5]});
+                    }
+                }
+                if(res.length==10){
+                    alert("已到达上限");
+                }
+                else{
+                    var xmlhttp1=new XMLHttpRequest();
+                    xmlhttp1.open("POST","/cgi-bin/addpoint.cgi",true);
+                    xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    xmlhttp1.send("name=P"+res.length.toString()+"&langitude="+x.toString()+"&latitude="+y.toString());
+							console.log("name=P"+res.length.toString()+"&langitude="+x.toString()+"&latitude="+y.toString());
+							xmlhttp1.onreadystatechange=function(){if (xmlhttp.readyState==4 && xmlhttp.status==200){console.log(xmlhttp1.responseText);}}
+                    console.log("sendrequest");
+                }
+            }
+        }
+	draw();	
+    }
+    function draw(){
+        var xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","/cgi-bin/getpointlist.cgi?operate=getpointlist",true);
+        xmlhttp.send();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                var map=new BMap.Map("allmap");
+                map.addControl(new BMap.MapTypeControl({
+                    mapTypes:[
+                        BMAP_NORMAL_MAP,
+                        BMAP_HYBRID_MAP
+                ]}));
+                map.enableScrollWheelZoom(true);
+							map.centerAndZoom(new BMap.Point(122.067,37.517),11);
+							map.addEventListener("click", addpoint);
+                var tmp=xmlhttp.responseText;
+						//console.log(tmp);
+                if(tmp=="\nno result"){
+							var point=new BMap.Point(122.067,37.517);
+							map.centerAndZoom(point,11);
+							map.addEventListener("click", addpoint);
+                    return;
+                			}
+					else{
+                var text=tmp.split("#");
+                var res=new Array();
+                for(var i=0;i<text.length;i+=6){
+                    if(text[i+5].charAt(0)=="P"){
+                        res.push({name:text[i+0],langitude:text[i+1],latitude:text[i+2],altitude:text[i+3],speed:text[i+4],time:text[i+5]});
+                    					}
+               				 }
+                console.log(res);
+                var pointArray=new Array();
+                for(var i=0;i<res.length;i++){
+                    var point=new BMap.Point(Number.parseFloat(res[i].langitude),Number.parseFloat(res[i].latitude));
+                    pointArray.push(point);
+                    map.addOverlay(new BMap.Marker(point));
+                			}
+                pointArray.push(pointArray[0]);
+                var polygon=new BMap.Polygon(pointArray,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.1});
+                map.addOverlay(polygon);
+                map.centerAndZoom(pointArray[0], 11);
+                map.addEventListener("click", addpoint);
+					}            
+			}
+        }
+    }
+    draw();
+</script>

@@ -1,0 +1,11 @@
+!/bin/sh
+
+#test1.cgi
+echo "Content-Type:text/html\n\r\n"
+echo ""
+echo ""
+echo "hello!"
+echo "\n\r\n"
+echo "the time is:"
+echo "\n\r\n"
+date

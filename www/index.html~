@@ -1,0 +1,34 @@
+<html> 
+<head>
+<title>Led远程控制</title></head> 
+<body>
+<form name="form1" action="/cgi-bin/pass.cgi" method="POST"> 
+<p align="center">&nbsp;<b><font size="4"> </font><font size="5"> 嵌入式LED远程控制系统  </font></b></p> 
+<fieldset style="width: 145; height: 39; padding: 2">
+ <legend> 
+<p align="center">Led1控制</p>
+ </legend> 
+<p align="center"><input type="radio" value="V1" checked name="R1">打开&nbsp;
+  <input type="radio" name="R1" value="V2">关闭</fieldset>&nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp; 
+<fieldset style="width: 145; height: 39; padding: 2">
+ <legend> 
+<p align="center">Led2控制</p> 
+</legend> 
+<p align="center"><input type="radio" value="V1" checked name="R2">打开&nbsp;
+  <input type="radio" name="R2" value="V2">关闭</fieldset>&nbsp;
+ &nbsp;&nbsp;&nbsp;&nbsp;
+<fieldset style="width: 145; height: 39; padding: 2">
+ <legend> 
+<p align="center">Led3控制</p> 
+</legend> 
+<p align="center"><input type="radio" value="V1" checked name="R3">打开&nbsp;
+  <input type="radio" name="R3" value="V2">关闭</fieldset><p> </p> 
+<table align="center" width="107">     
+<tr><td align="left"></td></tr>
+     <tr> 
+       <td width="101" height="35"><input type="submit" value="执  行"></td>
+     </tr> 
+</table>
+ </form> 
+</body> 

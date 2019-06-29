@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>基于GPS的老人防走失系统-地图</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+        </style>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ju5bl8QwoHYUgr1QbDGLymXxH9xIm4Qf"></script>
+    </head>
+    <body>
+        <nav>
+            <a href="/area.html">电子围栏</a>
+            <a href="/map.html">地图</a>
+        </nav>
+        <div id="allmap"></div>
+    </body>
+</html>
+<script type="text/javascript">
+    // 百度地图API功能
+    var map;
+
+    function redraw(){
+        map = new BMap.Map("allmap");    // 创建Map实例
+        map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
+        //添加地图类型控件
+        map.addControl(new BMap.MapTypeControl({
+            mapTypes:[
+                BMAP_NORMAL_MAP,
+                BMAP_HYBRID_MAP
+            ]}));	  
+        map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+
+        
+        var xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","/cgi-bin/getpointlist.cgi?operate=getpointlist",true);
+        xmlhttp.send();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                var tmp=xmlhttp.responseText;
+                if(tmp=="no result"){
+                    return;
+                }
+                var text=tmp.split("#");
+                //console.log(text);
+                var res=new Array();
+                for(var i=0;i<text.length;i+=6){
+                    if(text[i+5].charAt(0)=="P"){
+                        res.push({name:text[i+0],langitude:text[i+1],latitude:text[i+2],altitude:text[i+3],speed:text[i+4],time:text[i+5]});
+                    }
+                }
+                console.log(res);
+						if(res.length>=3){
+							
+                var pointArray=new Array();
+                for(var i=0;i<res.length;i++){
+                    var point=new BMap.Point(Number.parseFloat(res[i].langitude),Number.parseFloat(res[i].latitude));
+                    pointArray.push(point);
+                }
+                pointArray.push(pointArray[0]);
+                var polygon=new BMap.Polygon(pointArray,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.1});
+                map.addOverlay(polygon);
+		}
+                var xmlhttp1=new XMLHttpRequest();
+                xmlhttp1.open("GET","/cgi-bin/refreshpos.cgi?operate=refresh",true);
+                xmlhttp1.send();
+                xmlhttp1.onreadystatechange=function()
+                {
+                    if (xmlhttp1.readyState==4 && xmlhttp1.status==200)
+                    {
+                        //var map = new BMap.Map("allmap");
+								console.log(xmlhttp1.responseText);
+                        var text=xmlhttp1.responseText.split(",");
+                        var langitude=Number.parseFloat(text[0]);
+                        console.log(langitude);
+                        var latitude=Number.parseFloat(text[1]);
+                        console.log(latitude);
+                        var point=new BMap.Point(langitude,latitude);//var point=BMap.Point(122.067,37.517);
+                        map.centerAndZoom(point,15);
+                        var marker = new BMap.Marker(point);
+                        map.addOverlay(marker);
+								if(res.length>=3){
+                        var p={x:langitude,y:latitude};
+                        var isInArea=0;
+                        for(var i=0;i<pointArray.length-1;i++){
+                            var p1=pointArray[i];
+                            var p2=pointArray[i+1];
+                            var veca={x:p2.x-p1.x,y:p2.y-p1.y};
+                            var vecb={x:p.x-p1.x,y:p.y-p1.y};
+                            var flag;
+                            if(veca.x*vecb.y-veca.y*vecb.x>0){
+                                flag=1;
+                            }
+                            else{
+                                flag=-1;
+                            }
+                            isInArea+=flag;
+                        }
+                        var p1=pointArray[pointArray.length-1];
+                        var p2=pointArray[0];
+                        var veca={x:p2.x-p1.x,y:p2.y-p1.y};
+                        var vecb={x:p.x-p1.x,y:p.y-p1.y};
+                        var flag;
+                        if(veca.x*vecb.y-veca.y*vecb.x>0){
+                            flag=1;
+                        }
+                        else{
+                            flag=-1;
+                        }
+                        isInArea+=flag;
+                        console.log(isInArea);
+                        if(isInArea<0){
+                            isInArea*=-1;
+                        }
+                        if(isInArea!=pointArray.length){
+                            alert("目标已越过电子围栏！！！！");
+                        }
+			}
+                    }
+                }
+            }
+        }
+        
+    }
+    redraw();
+    window.setInterval(redraw,10000);
+</script>

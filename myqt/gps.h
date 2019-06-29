@@ -107,7 +107,7 @@ void writeSQLite(GPS_INFO *GPS)//改造成数据库读写函数
 		return;
 	}
 	sqliteDB_open();
-	sqliteDB_opt_addpath(name,longitude,latitude,high,speed,timer);
+	sqliteDB_opt_addpath(name,longitude,latitude,high,speed,timer,"0");
 	sqliteDB_close();
 }
 

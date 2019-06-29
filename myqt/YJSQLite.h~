@@ -6,6 +6,7 @@
 #include<string.h>
 
 static sqlite3 *db;//全局的数据连接
+static char* yjsql_debug;
 
 /******在用户还没有创建table时可用该函数创建一个table****/
 static int sqliteDB_create_oldtable(){
@@ -16,7 +17,7 @@ static int sqliteDB_create_oldtable(){
 	int nret=sqlite3_exec(db,sql,NULL,NULL,&zErrMsg);
 
  	if(nret!=SQLITE_OK){ 
- 		printf("%s\n",sqlite3_errmsg(db));
+ 		//printf("%s\n",sqlite3_errmsg(db));
   	return 1;//失败
  	}
  	else
@@ -28,12 +29,12 @@ static int sqliteDB_create_oldtable(){
 static int sqliteDB_create_pathtable(){
  
 	char* zErrMsg=NULL;
- 	char sql[256]="CREATE TABLE path(name varchar(40) primary key,jidu varchar(40) not null,weidu varchar(40) not null,high varchar(40) not null,speed varchar(40) not null,timer varchar(100) primary key not null);";
+ 	char sql[256]="CREATE TABLE path(name varchar(40) primary key,jidu varchar(40) not null,weidu varchar(40) not null,high varchar(40) not null,speed varchar(40) not null,timer varchar(100) primary key not null,flag varchar(1) not null);";
  
 	int nret=sqlite3_exec(db,sql,NULL,NULL,&zErrMsg);
 
  	if(nret!=SQLITE_OK){ 
- 		printf("%s\n",sqlite3_errmsg(db));
+ 		//printf("%s\n",sqlite3_errmsg(db));
   	return 1;//失败
  	}
  	else
@@ -50,7 +51,7 @@ static int sqliteDB_create_usertable(){
 	int nret=sqlite3_exec(db,sql,NULL,NULL,&zErrMsg);
 
  	if(nret!=SQLITE_OK){ 
- 		printf("%s\n",sqlite3_errmsg(db));
+ 		//printf("%s\n",sqlite3_errmsg(db));
   	return 1;//失败
  	}
  	else
@@ -66,21 +67,21 @@ static int sqliteDB_insert_records()
  	char sql2[256]="INSERT INTO user VALUES('june','man','48','433443','erth','son','0000');";
 	char sql3[256]="INSERT INTO user VALUES('marry','woman','45','433444','erth','wife of son','0000');";
 
-	char sql4[256]="INSERT INTO path VALUES('QingDao','11','22','33','44','2019-6-25-10-08');";
-	char sql5[256]="INSERT INTO path VALUES('JiNan','01','02','03','04','2019-6-25-10-09');";
-	char sql6[256]="INSERT INTO path VALUES('WeiHai','10','20','30','40','2019-6-26-10-09');";
+	//char sql4[256]="INSERT INTO path VALUES('QingDao','11','22','33','44','2019-6-25-10-08');";
+//	char sql5[256]="INSERT INTO path VALUES('JiNan','01','02','03','04','2019-6-25-10-09');";
+	//char sql6[256]="INSERT INTO path VALUES('WeiHai','10','20','30','40','2019-6-26-10-09');";
 
  	int nret=sqlite3_exec(db,sql1,NULL,NULL,&zErrMsg);
 
  	nret=sqlite3_exec(db,sql2,NULL,NULL,&zErrMsg);
 	nret=sqlite3_exec(db,sql3,NULL,NULL,&zErrMsg);
 
-	nret=sqlite3_exec(db,sql4,NULL,NULL,&zErrMsg);
-	nret=sqlite3_exec(db,sql5,NULL,NULL,&zErrMsg);
-	nret=sqlite3_exec(db,sql6,NULL,NULL,&zErrMsg);
+	//nret=sqlite3_exec(db,sql4,NULL,NULL,&zErrMsg);
+	//nret=sqlite3_exec(db,sql5,NULL,NULL,&zErrMsg);
+	//nret=sqlite3_exec(db,sql6,NULL,NULL,&zErrMsg);
 
  	if(nret!=SQLITE_OK){
- 	 	printf("%s\n",sqlite3_errmsg(db));
+ 	 	//printf("%s\n",sqlite3_errmsg(db));
   		return 1;//失败
  	}
  	else
@@ -90,24 +91,24 @@ static int sqliteDB_insert_records()
 static int callback(void *NotUsed, int argc, char **argv, char **azColName);
 
 /*** *建立与数据库的连接* **/
-int sqliteDB_open(){
+static int sqliteDB_open(){
 
 	int rc;//操作标志
 	//printf("开始连接数据库s\n");
-	rc = sqlite3_open("YJDB.db", &db);
+	rc = sqlite3_open("/mnt/nfs/boa/YJDB.db", &db);
 	if( rc ){
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
-		exit(1);
+		return 1;
 	}
 	//printf("\nOpen sucess!\n");
 
 //如果数据库里面不存在表的时候，就将下面的注释去掉注释
-	//if(!sqliteDB_create_usertable())
+	if(!sqliteDB_create_usertable())
 		//printf("\ntable exist");	
 	if(!sqliteDB_create_pathtable())
-		printf("\ntable exist");	
-	//if(!sqliteDB_create_oldtable())
+		//printf("\ntable exist");	
+	if(!sqliteDB_create_oldtable())
 		//printf("\ntable exist");
 
 	sqliteDB_insert_records();//初始化数据
@@ -152,7 +153,7 @@ static int sqliteDB_opt_addolduser(char *name,char *sex,char *age,char *address,
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
@@ -195,14 +196,14 @@ static int sqliteDB_opt_adduser(char *name,char *sex,char *age,char *phone,char 
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
 	return 0;//成功
 }
 /**** 添加一条记录到已知或未知数据库表**/
-static int sqliteDB_opt_addpath(char *name,char *jidu,char *weidu,char *high,char *speed,char *timer){
+static int sqliteDB_opt_addpath(char *name,char *jidu,char *weidu,char *high,char *speed,char *timer,char *flag){
 	int rc;
 	char *zErrMsg = 0;
 	char *sql=0;//动态生成的SQL语句
@@ -228,6 +229,9 @@ static int sqliteDB_opt_addpath(char *name,char *jidu,char *weidu,char *high,cha
 	sql = strcat(sql,tem_sql0);
 
 	sql = strcat(sql,timer);
+	sql = strcat(sql,tem_sql0);
+
+	sql= strcat(sql,flag);
 	sql = strcat(sql,tem_sql1);
 
 	sql = strcat(sql,tem_sql2);
@@ -235,7 +239,7 @@ static int sqliteDB_opt_addpath(char *name,char *jidu,char *weidu,char *high,cha
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
@@ -262,7 +266,7 @@ static int sqliteDB_opt_deleteolduser(char *name){
 
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
@@ -287,7 +291,7 @@ static int sqliteDB_opt_deleteuser(char *name){
 
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
@@ -311,7 +315,7 @@ static int sqliteDB_opt_deletepath(char *name){
 	sql = strcat(sql,tem_sql1);
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	if( rc!=SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		//fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		return 1;//失败
 	}
@@ -378,7 +382,7 @@ static int sqliteDB_opt_modify();
  	}
 
  	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
  	return dest;//返回结果
 }
 static char *sqliteDB_opt_select_alluser(){
@@ -426,7 +430,7 @@ static char *sqliteDB_opt_select_alluser(){
   }
 
  	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
  	return dest;
 }
 static char *sqliteDB_opt_select_allpath(){//按照时间降序输出
@@ -434,7 +438,7 @@ static char *sqliteDB_opt_select_allpath(){//按照时间降序输出
 	sqlite3_stmt* stmt=NULL;
  	char* zErrMsg=NULL;
 
-	char dest[1000]={0,};//结果
+	char dest[100000]={0,};//结果
 	char s[]="no result";
 
  	int nret=sqlite3_prepare(db,"SELECT * FROM path ORDER BY timer DESC;",strlen("SELECT * FROM path ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
@@ -476,10 +480,51 @@ static char *sqliteDB_opt_select_allpath(){//按照时间降序输出
  	}
 
  	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
  	return dest;
 }
+static char **sqliteDB_opt_select_newpath_src(){//查询最新的path路径信息
 
+	sqlite3_stmt* stmt=NULL;
+ 	char* zErrMsg=NULL;
+ 
+	char dest[1000]={0,};//结果
+	char s[]="no result";
+
+ 	int nret=sqlite3_prepare(db,"SELECT * FROM path WHERE flag='0' BY timer DESC;",strlen("SELECT * FROM path WHERE flag='0' ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
+ 	char** res;
+	if(nret!=SQLITE_OK){
+		res=(char**)malloc(sizeof(char*)*1);
+		res[0]=s;
+		return res;	
+	}
+	//printf("\n\tname\tjidu\tweidu\thigh\tspeed\ttimer\n");//测试
+ 	//printf("\t------------------------------------------------------------\n");
+	int n=1;
+ 	while(1){ 
+  		nret=sqlite3_step(stmt);
+  		if(nret!=SQLITE_ROW)
+  	 		break;
+  		char *name=( char *)sqlite3_column_text(stmt,0);
+		char *jidu=( char *)sqlite3_column_text(stmt,1);
+		char *weidu=( char *)sqlite3_column_text(stmt,2);
+		char *high=( char *)sqlite3_column_text(stmt,3);
+		char *speed=( char *)sqlite3_column_text(stmt,4);
+		char *timer=( char *)sqlite3_column_text(stmt,5);
+		res=(char**)malloc(sizeof(char*)*6);
+		res[0]=name;
+		res[1]=jidu;
+		res[2]=weidu;
+		res[3]=high;
+		res[4]=speed;
+		res[5]=timer;
+		break;//就只将最新的路径信息返回
+ 	}
+
+ 	sqlite3_finalize(stmt);
+	//printf("%s\n",dest);//测试
+ 	return res;
+}
 static char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
 
 	sqlite3_stmt* stmt=NULL;
@@ -487,8 +532,8 @@ static char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
 
 	char dest[1000]={0,};//结果
 	char s[]="no result";
-
- 	int nret=sqlite3_prepare(db,"SELECT * FROM path ORDER BY timer DESC;",strlen("SELECT * FROM path ORDER BY timer DESC;"),&stmt,(const char**)(&zErrMsg));
+	char* tmp="SELECT * FROM path WHERE flag='0' ORDER BY timer DESC;";
+ 	int nret=sqlite3_prepare(db,tmp,strlen(tmp),&stmt,(const char**)(&zErrMsg));
  	
 	if(nret!=SQLITE_OK)
   		return s;
@@ -506,7 +551,6 @@ static char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
 		char *speed=( char *)sqlite3_column_text(stmt,4);
 		char *timer=( char *)sqlite3_column_text(stmt,5);
 		char *spl="#";
-		
 		//printf("\t%s\t%s\t%s\t%s\t%s\t%s\n",name,jidu,weidu,high,speed,timer);//测试
 		if(n==0){
 			strcat(dest,spl);
@@ -528,7 +572,7 @@ static char *sqliteDB_opt_select_newpath(){//查询最新的path路径信息
  	}
 
  	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
  	return dest;
 }
 
@@ -584,7 +628,7 @@ static char *sqliteDB_opt_selectolduser(char *name){
  	}
 	
 	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
 	return dest;
 }
 static char *sqliteDB_opt_selectuser(char *name){
@@ -640,7 +684,7 @@ static char *sqliteDB_opt_selectuser(char *name){
  	}
 	
 	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
 	return dest;
 }
 static char *sqliteDB_opt_selectpath(char *name){
@@ -697,7 +741,7 @@ static char *sqliteDB_opt_selectpath(char *name){
  	}
 	
 	sqlite3_finalize(stmt);
-	printf("%s\n",dest);//测试
+	//printf("%s\n",dest);//测试
 	return dest;
 }
 
@@ -705,10 +749,10 @@ static char *sqliteDB_opt_selectpath(char *name){
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
   	int i;
   	for(i=0; i<argc; i++){
-    		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    		//printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
   	}
 
-  	printf("\n");
+  	//printf("\n");
   	return 0;
 }
 
@@ -743,21 +787,25 @@ static int sqliteDB_existolduser(char *name){
 	sqlite3_finalize(stmt);
 	return 0;//成功
 }
-static int sqliteDB_existuser(char *name){
+static int sqliteDB_existuser(char *name,char *password){
 
 	sqlite3_stmt* stmt=NULL;
  	char* zErrMsg=NULL;
  	
  	int nret=0;
 	int rc;
-
 	char *sql=0;//动态生成的SQL语句
 	char tem_sql[256]="select * from user where name = '";//
+	char tem_sql111[256]="and password = '";//
 	char tem_sql0[5] = "'";
 	char tem_sql1[5] = ";";
 
 	sql = strcat(tem_sql,name);
 	sql = strcat(sql,tem_sql0);
+	sql=strcat(sql,tem_sql111);
+   sql = strcat(sql,password);
+   sql = strcat(sql,tem_sql0);
+
 	sql = strcat(sql,tem_sql1);
 
 	nret=sqlite3_prepare(db,sql,strlen(sql),&stmt,(const char**)(&zErrMsg));
@@ -812,7 +860,7 @@ static double StringtoDouble(char *str){//将char*转换为double类型
 
 static char *DoubletoString(double f){//将double转换为char*类型
 	char str[100];
-	sprintf(str,"%.5lf",f);
+	//sprintf(str,"%.5lf",f);
 	return str;//返回数组首地址
 }
 
@@ -851,24 +899,20 @@ static char *sqliteDB_opt_selectuserpassword(char *name){
 	return _password;
 }
 
-static char *Login(char *name,char *password){//登录时进行的身份验证
-	char nam[]="no name";
-	char pas[]="wrong password";
-	char ses[]="successed";
+static char* Login(char *name,char *password){//登录时进行的身份验证
+	char *nam="no name";
+	char *pas="wrong password";
+	char *ses="successed";
 	
 	//先判断是否存在用户名
-	int n=sqliteDB_existuser(name);
+	int n=sqliteDB_existuser(name,password);//debug
 	if(n==1){//不存在用户名,返回
 		return nam;
 	}
-	if(n==0){//存在用户名，进行判断密码
-		char *dest=sqliteDB_opt_selectuserpassword(name);//查询该用户名的密码
-		if(strcmp(password,dest)==0){//密码相等
-			return ses;
-		}else{//密码不等
-			return pas;
-		}
+	else if(n==0){
+	return ses;
 	}
+	
 }
 
 #endif
