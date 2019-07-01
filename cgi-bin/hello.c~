@@ -1,0 +1,11 @@
+#include 
+void main(){
+    printf("Content-type: text/html\n\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("Hello, world.\n");
+    printf("\n");
+    printf("\n");
+    exit(0);
+}

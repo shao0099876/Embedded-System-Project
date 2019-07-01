@@ -1,0 +1,30 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include"tools.h"
+#include"/arm2410cl/Trolltech/qt-embedded-4.4.0/myqt/YJSQLite.h"
+#define DEBUG 0
+int main(){
+	printf("Content-type: text/html\n\n");
+    char* type=getenv("CONTENT_TYPE");
+    int length=atoi(getenv("CONTENT_LENGTH"));
+    if(strcmp(type,"application/x-www-form-urlencoded")==0){
+        char *a=(char*)malloc(sizeof(char)*100);
+        fread(a, sizeof(char), length, stdin); 
+        a[length]='\0';
+        char* name=analyze(a,"name");
+        char* langitude=analyze(a,"langitude");
+        char* latitude=analyze(a,"latitude");
+        char* altitude="0";
+        char* speed="0";
+        char* time=name;
+        int res=sqliteDB_open();
+			puts(name);puts(langitude);puts(latitude);puts(altitude);puts(speed);puts(time);
+			printf("%d",res);
+        res=sqliteDB_opt_addpath(name,langitude,latitude,altitude,speed,time,"1");
+			//printf("%d",res);
+        sqliteDB_close();
+        return 0;
+    }
+    return 0;
+}

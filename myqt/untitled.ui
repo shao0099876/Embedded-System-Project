@@ -1,0 +1,207 @@
+<ui version="4.0" >
+ <class>Form</class>
+ <widget class="QWidget" name="Form" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>663</width>
+    <height>475</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="pushButton" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>370</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>selectuser</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2" >
+   <property name="geometry" >
+    <rect>
+     <x>190</x>
+     <y>380</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>selectold</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>450</x>
+     <y>230</y>
+     <width>171</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>160400202 杨蛟
+160400209 刘轩
+160400618 邵若忱</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="oldtable" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>280</y>
+     <width>441</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text" >
+     <string>old</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>name</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>sex</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>age</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>address</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>state</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QTableWidget" name="usertable" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>170</y>
+     <width>441</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text" >
+     <string>user</string>
+    </property>
+   </row>
+   <row>
+    <property name="text" >
+     <string>user</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>name</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>sex</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>age</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>phone</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>addres</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>relation</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4" >
+   <property name="geometry" >
+    <rect>
+     <x>490</x>
+     <y>170</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>GPS</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>631</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <row>
+    <property name="text" >
+     <string>GPS</string>
+    </property>
+   </row>
+   <column>
+    <property name="text" >
+     <string>addrname</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>longitude</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>latitude</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>high</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>speed</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>time</string>
+    </property>
+   </column>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
